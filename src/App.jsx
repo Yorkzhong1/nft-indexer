@@ -18,9 +18,27 @@ function App() {
   const [hasQueried, setHasQueried] = useState(false);
   const [tokenDataObjects, setTokenDataObjects] = useState([]);
 
+  async function connect() {
+    const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+    if(accounts.length===0){
+      alert('Please connect to metamask')
+    }else{
+    setUserAddress(accounts[0]);
+    document.getElementById("useraddress").value=accounts[0];
+    console.log(userAddress)}
+  }
+
   async function getNFTsForOwner() {
+    document.getElementById('display1').innerHTML=`<h2 my={36}>Connecting to blockchain...</h2>`
+    let regex=/^0x[a-fA-F0-9]{40}$/
+    let check=regex.test(userAddress)// check whether the address in correct format
+    if(!check){
+        
+        document.getElementById('display1').innerHTML=`<h2  my={36}>Incorrect address, please input again.</h2>`
+      }
+
     const config = {
-      apiKey: '<-- COPY-PASTE YOUR ALCHEMY API KEY HERE -->',
+      apiKey: 'g75pF2eTt7uuz_YgGRYvMTHu5LLxOvOQ',
       network: Network.ETH_MAINNET,
     };
 
@@ -40,6 +58,8 @@ function App() {
 
     setTokenDataObjects(await Promise.all(tokenDataPromises));
     setHasQueried(true);
+
+    document.getElementById('display1').innerHTML=`<h2 my={36}> Here are your NFTs:</h2>`
   }
   return (
     <Box w="100vw">
@@ -72,12 +92,23 @@ function App() {
           p={4}
           bgColor="white"
           fontSize={24}
+          id="useraddress"
         />
-        <Button fontSize={20} onClick={getNFTsForOwner} mt={36} bgColor="blue">
+        <Flex>
+          <Button fontSize={20} textAlign="center" type="button" onClick={
+          ()=>{
+            connect()
+          }
+          } ml="10px" mt="10px" bgColor="lightgreen" >
+          Connecting to Web3
+        </Button>
+        <Button fontSize={20} onClick={getNFTsForOwner}  ml="10px" mt="10px" bgColor="lightgreen">
           Fetch NFTs
         </Button>
+        </Flex>
+        <div id='display1'></div>
 
-        <Heading my={36}>Here are your NFTs:</Heading>
+        
 
         {hasQueried ? (
           <SimpleGrid w={'90vw'} columns={4} spacing={24}>
