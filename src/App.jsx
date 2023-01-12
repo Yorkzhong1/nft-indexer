@@ -18,6 +18,7 @@ function App() {
   const [hasQueried, setHasQueried] = useState(false);
   const [tokenDataObjects, setTokenDataObjects] = useState([]);
 
+ //here connect to metamask
   async function connect() {
     const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
     if(accounts.length===0){
@@ -30,12 +31,14 @@ function App() {
 
   async function getNFTsForOwner() {
     document.getElementById('display1').innerHTML=`<h2 my={36}>Connecting to blockchain...</h2>`
-    let regex=/^0x[a-fA-F0-9]{40}$/
-    let check=regex.test(userAddress)// check whether the address in correct format
-    if(!check){
-        
+    let regex1=/^0x[a-fA-F0-9]{40}$/
+    let regex2=/[a-fA-F0-0]*.eth/
+    let check1=regex1.test(userAddress)
+    let check2=regex2.test(userAddress)// check whether the input is eth address or ENS domain name
+    console.log(check2)
+    if(!check1&&!check2){
         document.getElementById('display1').innerHTML=`<h2  my={36}>Incorrect address, please input again.</h2>`
-      }
+    }
 
     const config = {
       apiKey: 'g75pF2eTt7uuz_YgGRYvMTHu5LLxOvOQ',
@@ -43,6 +46,12 @@ function App() {
     };
 
     const alchemy = new Alchemy(config);
+    if(check2){
+      const add=await alchemy.core.resolveName(userAddress);
+      setUserAddress(add)
+    }
+    
+
     const data = await alchemy.nft.getNftsForOwner(userAddress);
     setResults(data);
 
