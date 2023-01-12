@@ -30,7 +30,6 @@ function App() {
   }
 
   async function getNFTsForOwner() {
-    document.getElementById('display1').innerHTML=`<h2 my={36}>Connecting to blockchain...</h2>`
     let regex1=/^0x[a-fA-F0-9]{40}$/
     let regex2=/[a-fA-F0-0]*.eth/
     let check1=regex1.test(userAddress)
@@ -39,6 +38,7 @@ function App() {
     if(!check1&&!check2){
         document.getElementById('display1').innerHTML=`<h2  my={36}>Incorrect address, please input again.</h2>`
     }
+    document.getElementById('display1').innerHTML=`<h2 my={36}>Connecting to blockchain...</h2>`
 
     const config = {
       apiKey: 'g75pF2eTt7uuz_YgGRYvMTHu5LLxOvOQ',
